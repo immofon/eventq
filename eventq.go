@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type EventFunc func(tick int, ud interface{})
+type EventFunc func(ud interface{})
 
 type Event struct {
 	Tick int
@@ -96,7 +96,7 @@ func (eq *EventQueue) Run(ud interface{}) {
 	for mark != nil {
 		if e := mark.Value.(Event); e.Tick == eq.tick {
 			if e.Func != nil {
-				e.Func(eq.tick, ud)
+				e.Func(ud)
 			}
 			eq.data.Remove(mark)
 		} else {

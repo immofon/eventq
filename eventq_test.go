@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Func(tick int, ud interface{}) {
+func Func(ud interface{}) {
 	eq := ud.(*EventQueue)
 	eq.Add(10, Func)
 }
@@ -68,8 +68,9 @@ func check_battle_end(bf *BattleField) bool {
 func AIFunc(id int) EventFunc {
 	tid := target_role_id(id)
 	var ai_func EventFunc
-	ai_func = func(tick int, ud interface{}) {
+	ai_func = func(ud interface{}) {
 		bf := ud.(*BattleField)
+		tick := bf.EQ.Tick()
 		attack := bf.Roles[id].Atk
 		bf.Roles[tid].HP -= attack
 		if bf.Roles[tid].HP <= 0 {
