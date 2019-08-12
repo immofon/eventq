@@ -12,19 +12,19 @@ type Event struct {
 	Func EventFunc
 }
 
-type EventQueue struct {
+type Queue struct {
 	tick int
 	data *list.List
 }
 
-func New() *EventQueue {
-	return &EventQueue{
+func New() *Queue {
+	return &Queue{
 		tick: 0,
 		data: list.New(),
 	}
 }
 
-func (eq *EventQueue) should_insert_front(tick int) bool {
+func (eq *Queue) should_insert_front(tick int) bool {
 	v := eq.data.Front()
 	if v == nil {
 		return true
@@ -32,7 +32,7 @@ func (eq *EventQueue) should_insert_front(tick int) bool {
 	return v.Value.(Event).Tick > tick
 }
 
-func (eq *EventQueue) find_last(tick int) *list.Element {
+func (eq *Queue) find_last(tick int) *list.Element {
 	ret := eq.data.Front()
 	if ret.Next() == nil {
 		return ret
@@ -51,10 +51,10 @@ func (eq *EventQueue) find_last(tick int) *list.Element {
 	return nil
 }
 
-func (eq *EventQueue) Tick() int {
+func (eq *Queue) Tick() int {
 	return eq.tick
 }
-func (eq *EventQueue) Add(afterTick int, fn EventFunc) {
+func (eq *Queue) Add(afterTick int, fn EventFunc) {
 	if afterTick <= 0 {
 		panic("afterTick MUST great than 0")
 	}
@@ -70,15 +70,15 @@ func (eq *EventQueue) Add(afterTick int, fn EventFunc) {
 	}
 }
 
-func (eq *EventQueue) Clean() {
+func (eq *Queue) Clean() {
 	eq.data = list.New()
 }
 
-func (eq *EventQueue) IsEmpty() bool {
+func (eq *Queue) IsEmpty() bool {
 	return eq.data.Front() == nil
 }
 
-func (eq *EventQueue) NextEventTick() int {
+func (eq *Queue) NextEventTick() int {
 	mark := eq.data.Front()
 	if mark == nil {
 		return 0
@@ -86,7 +86,7 @@ func (eq *EventQueue) NextEventTick() int {
 	return mark.Value.(Event).Tick
 }
 
-func (eq *EventQueue) Run(ud interface{}) {
+func (eq *Queue) Run(ud interface{}) {
 	mark := eq.data.Front()
 	if mark == nil {
 		return
@@ -106,13 +106,13 @@ func (eq *EventQueue) Run(ud interface{}) {
 	}
 }
 
-func (eq *EventQueue) RunUntilEmpty(ud interface{}) {
+func (eq *Queue) RunUntilEmpty(ud interface{}) {
 	for !eq.IsEmpty() {
 		eq.Run(ud)
 	}
 }
 
-func (eq *EventQueue) Print() {
+func (eq *Queue) Print() {
 	fmt.Printf("%d: EventQueue [", eq.tick)
 	for e := eq.data.Front(); e != nil; e = e.Next() {
 		// do something with e.Value
